@@ -1,6 +1,9 @@
 import os
 import subprocess
+from subprocess import Popen
 import yaml
+
+FNULL = open(os.devnull, 'w')
 
 
 def read_config(path_to_config_yaml):
@@ -12,15 +15,14 @@ def read_config(path_to_config_yaml):
 
 
 def verify_youtubedl_installed():
-    FNULL = open(os.devnull, 'w')
     return_code = subprocess.run(
         ["which", "youtube-dl"], stdout=FNULL).returncode
     if return_code != 0:
         raise Exception("youtube-dl not found")
 
 
-def createDirectories():
-    for podcast in podcasts:
+def createDirectories(config):
+    for podcast in config['podcasts']:
         dir = '/downloads/' + podcast['channelName']
         try:
             print("Try creating directory: " + dir)
@@ -29,21 +31,33 @@ def createDirectories():
             print(f"Directory {dir} already exists")
 
 
-def downloadPodcasts(cmd):
-    for podcast in podcasts:
+def downloadPodcasts(config, cmd):
+    allProcesses = []
+    verbose = os.environ['VERBOSE']
+    if verbose == False:
+        out = FNULL
+    else:
+        out = None
+
+    for podcast in config['podcasts']:
         downloadChannelCommand = cmd + ["--download-archive",
                                         f"/downloads/{podcast['channelName']}/archive.txt", "-o", f"/downloads/{podcast['channelName']}/%(title)s__%(uploader)s__%(upload_date)s.%(ext)s", podcast['playlistToDownloadURL']]
         print(f"Excecuting: {downloadChannelCommand}")
-        subprocess.run(downloadChannelCommand)
+        p = subprocess.Popen(downloadChannelCommand, stdout=out)
+        allProcesses.append(p)
+    try:
+        for process in allProcesses:
+            process.wait()
+    except Exception as e:
+        print("Unexpected Exception: " + e.message)
 
 
 config = read_config('/config.yaml')
 lengthFilter = config['minLength']
-podcasts = config['podcasts']
 
 cmd = ["youtube-dl", "-x", "-i", "--dateafter", "now-12months", "--audio-format", "mp3",
        "--embed-thumbnail", "--add-metadata", "--match-filter", f"duration>{lengthFilter}"]
 
 verify_youtubedl_installed()
-createDirectories()
-downloadPodcasts(cmd)
+createDirectories(config)
+downloadPodcasts(config, cmd)

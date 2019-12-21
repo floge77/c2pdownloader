@@ -10,5 +10,7 @@ WORKDIR /c2pdownloader
 
 ADD downloader.py Pipfile Pipfile.lock ./
 
+ENV VERBOSE=false
+
 RUN pip3 install --no-cache-dir pipenv && pipenv install
 ENTRYPOINT ["pipenv", "run", "python3", "downloader.py"]

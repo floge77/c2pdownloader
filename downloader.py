@@ -43,13 +43,17 @@ def downloadPodcasts(config, cmd):
         downloadChannelCommand = cmd + ["--download-archive",
                                         f"/downloads/{podcast['channelName']}/archive.txt", "-o", f"/downloads/{podcast['channelName']}/%(title)s__%(uploader)s__%(upload_date)s.%(ext)s", podcast['playlistToDownloadURL']]
         print(f"Excecuting: {downloadChannelCommand}")
-        p = subprocess.Popen(downloadChannelCommand, stdout=out)
-        allProcesses.append(p)
-    try:
-        for process in allProcesses:
-            process.wait()
-    except Exception as e:
-        print("Unexpected Exception: " + e.message)
+        parallelExecution = os.environ['PARALLEL']
+        if parallelExecution:
+            p = subprocess.Popen(downloadChannelCommand, stdout=out)
+            allProcesses.append(p)
+            try:
+                for process in allProcesses:
+                    process.wait()
+            except Exception as e:
+                print("Unexpected Exception: " + e.message)
+        else:
+            subprocess.run(downloadChannelCommand)
 
 
 config = read_config('/config.yaml')

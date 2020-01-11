@@ -1,4 +1,4 @@
-FROM alpine
+FROM arm32v6/alpine
 
 RUN apk update && apk add --no-cache ffmpeg curl python3
 RUN curl -L https://yt-dl.org/downloads/latest/youtube-dl -o /usr/local/bin/youtube-dl
@@ -12,5 +12,5 @@ ADD downloader.py Pipfile Pipfile.lock ./
 
 ENV VERBOSE=false
 
-RUN pip3 install --no-cache-dir pipenv &&  pipenv install --python /usr/bin/python3
+RUN pip3 install --no-cache-dir pipenv && pipenv install --python /usr/bin/python3
 ENTRYPOINT ["pipenv", "run", "python3", "downloader.py"]

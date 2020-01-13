@@ -29,6 +29,19 @@ def createDirectories(config):
             os.mkdir(dir)
         except FileExistsError:
             print(f"Directory {dir} already exists")
+        finally:
+            writeConfigYaml(podcast)
+
+
+def writeConfigYaml(podcast):
+    fileName = os.path.join(
+        '/downloads', podcast['channelName'], 'metadata.yaml')
+    try:
+        with open(fileName, 'w') as outfile:
+            print(f"Writing metadata.yaml to dir: {podcast['channelName']}")
+            yaml.dump(podcast, outfile, default_flow_style=False)
+    except FileExistsError:
+        print(f"{fileName} already exists")
 
 
 def downloadPodcasts(config, cmd):

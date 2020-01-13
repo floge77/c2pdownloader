@@ -35,7 +35,7 @@ podcasts:
 4. Run the docker container with the config.yaml and downloads directory mounted:
 
 ```bash
-docker run -it --rm --name c2pdownloader -v $(pwd)/config.yaml:/config.yaml -v /Users/floge77/Downloads:/downloads c2pdownloader
+docker run -it --rm --name c2pdownloader -v $(pwd)/config.yaml:/config.yaml -v $HOME/Downloads:/downloads c2pdownloader
 ```
 
-The downloads will run in parallel which is why the output of youtube-dl would be a mess. Therefore c2pdownloader will print the output to /dev/null. If you wish to see the output or need to debug c2pdownloader just add "`-e VERBOSE=True`" to the docker run command.
+The downloads will run in parallel which when `-e PARALLEL=true` is passed to the docker run command. Parallele execution will mess up the output of youtube-dl. Therefore c2pdownloader will print the output to /dev/null. If you wish to see the output or need to debug c2pdownloader just add "`-e VERBOSE=tue`" to the docker run command.

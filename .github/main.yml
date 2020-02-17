@@ -1,0 +1,26 @@
+name: Publish Docker for Raspberry PI
+on:
+  push:
+    branches:
+      - master
+  schedule:
+    - cron: "* * * * 5"
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@master
+      - name: Publish PI Image to Registry
+        uses: elgohr/Publish-Docker-Github-Action@master
+        with:
+          name: floge77/c2pdownloaderpi:latest
+          username: ${{ secrets.DOCKER_USERNAME }}
+          password: ${{ secrets.DOCKER_PASSWORD }}
+          dockerfile: DockerfileRPIzero
+      - name: Publish Linux Image to Registry
+        uses: elgohr/Publish-Docker-Github-Action@master
+        with:
+          name: floge77/c2pdownloader:latest
+          username: ${{ secrets.DOCKER_USERNAME }}
+          password: ${{ secrets.DOCKER_PASSWORD }}
+          dockerfile: Dockerfile

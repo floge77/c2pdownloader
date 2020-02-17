@@ -1,4 +1,4 @@
-name: Publish Docker for Raspberry PI
+name: Publish Docker Images
 on:
   push:
     branches:
@@ -10,18 +10,27 @@ jobs:
   build-rpi:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@master
-      - name: Publish PI Image to Registry
-        uses: elgohr/Publish-Docker-Github-Action@master
+      - name: checkout
+        uses: actions/checkout@master
+      - name: Setup buildx
+        uses: crazy-max/ghaction-docker-buildx@v1
         with:
-          name: floge77/c2pdownloaderpi:latest
-          username: ${{ secrets.DOCKER_USERNAME }}
-          password: ${{ secrets.DOCKER_PASSWORD }}
-          dockerfile: DockerfileRPIzero
+          version: latest
+      - name: Login to dockerhub
+        run: |
+           echo "${{ secrets.DOCKER_PASSWORD }}" | docker login docker.io -u "${{ secrets.DOCKER_USERNAME }}" --password-stdin
+      - name: Build and Push docker image for rpi zero
+        run: |
+          docker buildx build \
+            --platform linux/386,linux/amd64,linux/arm/v6,linux/arm/v7,linux/arm64,linux/ppc64le,linux/s390x \
+            --output "type=image,push=true" \
+            --tag floge77/c2pdownloaderpi \
+            --file DockerfileRPIzero .
   build-linux:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@master
+      - name: checkout
+        uses: actions/checkout@master
       - name: Publish Linux Image to Registry
         uses: elgohr/Publish-Docker-Github-Action@master
         with:

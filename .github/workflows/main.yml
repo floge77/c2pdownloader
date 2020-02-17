@@ -1,7 +1,11 @@
 name: Publish Docker for Raspberry PI
 on:
+  push:
+    branches:
+      - master
   schedule:
-    - cron: '* * * * 5'
+    - cron: "* * * * 5"
+
 jobs:
   build:
     runs-on: ubuntu-latest

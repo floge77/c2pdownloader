@@ -5,6 +5,7 @@ RUN apk update && apk add --no-cache ffmpeg curl python3
 RUN curl -L https://yt-dl.org/downloads/latest/youtube-dl -o /usr/local/bin/youtube-dl
 RUN chmod a+rx /usr/local/bin/youtube-dl && chown pi /usr/local/bin/youtube-dl
 
+USER pi
 VOLUME [ "/downloads" ]
 
 WORKDIR /c2pdownloader
@@ -13,9 +14,8 @@ ADD downloader.py Pipfile Pipfile.lock ./
 
 ENV VERBOSE=false
 ENV PARALLEL=false
+ENV PATH=$PATH:/home/pi/.local/bin
 
-RUN pip3 install  --no-cache-dir pipenv
+RUN pip3 install --user pi --upgrade pip && pip3 install --user pi  --no-cache-dir pipenv 
 RUN pipenv install --python /usr/bin/python3
-
-USER pi
 ENTRYPOINT ["pipenv", "run", "python3", "downloader.py"]

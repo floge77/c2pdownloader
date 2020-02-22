@@ -12,7 +12,6 @@ if [[ ! -f "$CONFIG" ]]; then
 fi
 
 docker stop cloud2podcast || echo "Could not stop cloud2podcast"
-docker rm cloud2podcast || echo "Could not remove cloud2podcast"
 docker pull floge77/c2pdownloaderpi
 docker run -it --name c2pdownloader --rm -v $(pwd)/config.yaml:/config.yaml -v $HOME/downloads:/downloads floge77/c2pdownloaderpi
 docker run -d --rm --name cloud2podcast -p 80:8080 -v $HOME/downloads:/downloads -e HOST_IP="cloud2podcast" -e port=80 -it floge77/cloud2podcastpi

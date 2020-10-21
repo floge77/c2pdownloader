@@ -1,7 +1,7 @@
 FROM arm32v6/alpine
 
 RUN adduser -D -g '' pi
-RUN apk update && apk add --no-cache ffmpeg curl python3 python3-pip
+RUN apk update && apk add --no-cache ffmpeg curl python3 py3-pip
 RUN curl -L https://yt-dl.org/downloads/latest/youtube-dl -o /usr/local/bin/youtube-dl
 RUN chmod a+rx /usr/local/bin/youtube-dl && chown pi /usr/local/bin/youtube-dl
 

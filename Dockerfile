@@ -1,6 +1,6 @@
 FROM alpine
 
-RUN apk update && apk add --no-cache ffmpeg curl python3
+RUN apk update && apk add --no-cache ffmpeg curl python3 python3-pip
 RUN curl -L https://yt-dl.org/downloads/latest/youtube-dl -o /usr/local/bin/youtube-dl
 RUN chmod a+rx /usr/local/bin/youtube-dl
 

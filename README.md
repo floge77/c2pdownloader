@@ -1,5 +1,7 @@
 # Cloud2Podcast Downloader
 
+**deprecated** Use [PodcastMaker](https://github.com/floge77/PodcastMaker) instead!
+
 Downloads youtube channels based on your configuration using youtube-dl.
 
 ## How to use
